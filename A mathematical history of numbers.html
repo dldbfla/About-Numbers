@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Mathematical Fact within a Range</title>
+</head>
+<body>
+
+<h1>Random Mathematical Fact within a Range</h1>
+
+<label for="minInput">Min Value:</label>
+<input type="number" id="minInput">
+
+<label for="maxInput">Max Value:</label>
+<input type="number" id="maxInput">
+
+<button onclick="getRandomMathFact()">Get Random Fact</button>
+
+<h2>Mathematical Fact:</h2>
+<p id="mathFact"></p>
+
+<script>
+    function getRandomMathFact() {
+        // Get the entered min and max values
+        var minValue = document.getElementById('minInput').value;
+        var maxValue = document.getElementById('maxInput').value;
+
+        // Generate a random number within the specified range
+        var randomNumber = Math.floor(Math.random() * (maxValue - minValue + 1) + parseInt(minValue));
+
+        // Use XMLHttpRequest to make an AJAX request to the Numbers API
+        var xhr = new XMLHttpRequest();
+
+        // Configure the AJAX request
+        xhr.open('GET', 'http://numbersapi.com/random/trivia?min=' + minValue + '&max=' + maxValue + '&json', true);
+
+        // Callback function to execute when the request is complete
+        xhr.onload = function() {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                // Parse the JSON response
+                var response = JSON.parse(xhr.responseText);
+
+                // Check if there is a fact
+                if (response.found) {
+                    // Display the fact
+                    document.getElementById('mathFact').textContent = response.text;
+                } else {
+                    // Display a message if no fact is found
+                    document.getElementById('mathFact').textContent = 'No interesting fact found for this range.';
+                }
+            } else {
+                // Error handling
+                console.error('AJAX request failed');
+            }
+        };
+
+        // Send the request
+        xhr.send();
+    }
+</script>
+
+</body>
+</html>
