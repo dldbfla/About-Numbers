@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interesting Facts about a Number</title>
+</head>
+<body>
+
+<h1>Interesting Facts about a Number</h1>
+
+<label for="numberInput">Enter a number:</label>
+<input type="number" id="numberInput">
+<button onclick="getInterestingFacts()">Get Facts</button>
+
+<h2>Interesting Facts:</h2>
+<ul id="interestingFactsList"></ul>
+
+<script>
+    function getInterestingFacts() {
+        // Get the entered number
+        var inputNumber = document.getElementById('numberInput').value;
+
+        // Use XMLHttpRequest to make an AJAX request to the Numbers API
+        var xhr = new XMLHttpRequest();
+
+        // Configure the AJAX request
+        xhr.open('GET', 'http://numbersapi.com/' + inputNumber + '?json', true);
+
+        // Callback function to execute when the request is complete
+        xhr.onload = function() {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                // Parse the JSON response
+                var response = JSON.parse(xhr.responseText);
+
+                // Check if there is a fact
+                if (response.found) {
+                    // Get the array of facts
+                    var factsArray = response.text.split('.');
+
+                    // Update the list
+                    var interestingFactsList = document.getElementById('interestingFactsList');
+                    interestingFactsList.innerHTML = '';  // Clear previous content
+
+                    // Add each fact from the array as a list item
+                    factsArray.forEach(function(fact) {
+                        var listItem = document.createElement('li');
+                        listItem.textContent = fact + '.';
+                        interestingFactsList.appendChild(listItem);
+                    });
+                } else {
+                    // Display a message if no fact is found
+                    var interestingFactsList = document.getElementById('interestingFactsList');
+                    interestingFactsList.innerHTML = '<li>No interesting facts found for this number.</li>';
+                }
+            } else {
+                // Error handling
+                console.error('AJAX request failed');
+            }
+        };
+
+        // Send the request
+        xhr.send();
+    }
+</script>
+
+</body>
+</html>
